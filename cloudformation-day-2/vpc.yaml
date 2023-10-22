@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template deploys a dev-vpc with three subnets.
+Metadata: {}
+
+Parameters: {} 
+
+Mappings: {}
+
+Conditions: {} 
+
+Resources: 
+  DevVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+       - Key: environment
+         Value: dev
+
+  webSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref DevVPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags:
+      - Key: environment
+        Value: dev
+
+  appSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:  !Ref DevVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags:
+      - Key: environment
+        Value: dev
+
+  databaseSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:  !Ref DevVPC
+      CidrBlock: 10.0.3.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags:
+      - Key: environment
+        Value: dev
+
+Outputs: {}
+
+
