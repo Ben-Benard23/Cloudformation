@@ -49,6 +49,6 @@ Resources:
       - Key: environment
         Value: dev
 
-Outputs: {}
+Outputs:  {}
 
 

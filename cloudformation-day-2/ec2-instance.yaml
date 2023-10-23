@@ -36,4 +36,5 @@ Resources:
       - Key: Name
         Value: DevWebserver
 
-Outputs: {}
+
+
