@@ -26,7 +26,7 @@ Resources:
     Properties:
       KeyName: !Ref DevWebserverkeyname
       ImageId: !FindInMap [ DevWebservergoldenAMIMap,!Ref 'AWS::Region',GoldenAMI ]
-      InstanceType: t2.micro
+      InstanceType: t2.nano
       Monitoring: true
       UserData: !Base64 |
 
