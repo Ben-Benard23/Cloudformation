@@ -1,0 +1,141 @@
+#this will
+AWSTemplateFormatVersion: 2010-09-09
+Description: Thsi template provisions the webserver and security groups
+Metadata: {}
+
+Parameters: 
+  DevWebserverSGgroupname:
+    Description: Please provide your group name
+    Type: String
+    Default: DevWebserverSG
+
+  DevWebserverSGgroupdescription:
+    Description: Please provide your group description
+    Type: String
+    Default: Enabling ssh and http
+
+  DevAppserverSGgroupname:
+    Description: Please provide your App server security group name
+    Type: String
+    Default: DevAppserverSG
+
+  DevAppserverSGgroupdescription:
+    Description: Please provide your security group description
+    Type: String
+    Default: Enabling security group referential
+
+  DevDBserverSGgroupname:
+    Description: Please provide your group name
+    Type: String
+    Default: DevDBserverSG
+
+  DevDBserverSGgroupdescription:
+    Description: Please provide your group description
+    Type: String
+    Default: Enabling mySQL
+
+Mappings: {}
+
+Conditions: {} 
+
+Resources: 
+  # Webserver security group
+  DevWebserverSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevWebserverSGgroupname
+      GroupDescription: !Ref DevWebserverSGgroupdescription
+      VpcId: !ImportValue  DevVPCId  #type import # importfunction to import exported value from network
+      SecurityGroupIngress:
+        - IpProtocol: tcp   # get security rule from the documentation
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0       
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevWebserverSG
+
+  # DevAppServer security group
+  DevAppserverSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevAppserverSGgroupname
+      GroupDescription: !Ref DevAppserverSGgroupdescription
+      VpcId: !ImportValue DevVPCId 
+      SecurityGroupIngress:
+        - IpProtocol: tcp   # get security rule from the documentation
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0       
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevAppserverSG
+
+
+  # database security group
+  DevDBserverSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevDBserverSGgroupname
+      GroupDescription: !Ref DevDBserverSGgroupdescription
+      VpcId: !ImportValue DevVPCId 
+      SecurityGroupIngress:
+        - IpProtocol: tcp   # get security rule from the documentation
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+      
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+
+      Tags:
+        - Key: Name
+          Value: DevDBserverSG
+
+Outputs:       #you need to export the SGId to the instances
+  DevWebserverSGExportOutput:
+    Description: Exporting DevWebserverSGId
+    Value: !Ref DevWebserverSG
+    Export: 
+      Name: DevWebserverSGId
+
+  DevAppserverSGExportOutput:
+    Description: Exporting DevAppserverSGId
+    Value: !Ref DevAppserverSG
+    Export: 
+      Name: DevAppserverSGId
+
+  DevDBserverSGExportOutput:
+    Description: Exporting DevDBserverSGId
+    Value: !Ref DevDBserverSG
+    Export: 
+      Name: DevDBserverSGId

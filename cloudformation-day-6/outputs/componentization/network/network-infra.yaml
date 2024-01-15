@@ -1,49 +1,49 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: This template provisions our dev network environment
+Description: "this templete provisions our Dev network environment"
 Metadata: {}
 
 Parameters: 
-  # Dev VPC Parameters
-  DevVPCCidrBlockPara:
-    Description: Please provide your Dev VPC CidrBlock
+  # DevVPC parameters
+  DevVPCCirdblockPara:
+    Description: Please provide your DevVPC Cidr block
     Type: String
     Default: 10.0.0.0/16
 
-  DevVPCEnableDnsSupportPara:
-    Description: Please enable Dns Support(true/false)
+  DevVPCEnableDnsSupportpara:
+    Description: Please provide true or false
     Type: String
     Default: true
 
-  # Webserver subnet parameters
+  # Webserversubnet Parameters
   DevWebserverSubnetAZPara:
-    Description: Please select an AZ for the DevWebserver subnet
+    Description: Please select an AZ for the webserversubnet
     Type: AWS::EC2::AvailabilityZone::Name
-    Default: us-east-1a
+    Default: ca-central-1a
 
-  DevWebserverSubnetCidrBlockPara:
-    Description: Please provide the Cidr block for your DevWebserver subnet
+  DevWebserverSubnetCidrPara:
+    Description: please provide your Cidr block
     Type: String
     Default: 10.0.1.0/24
 
-  # Appserver subnet parameters
+  # DevAppserverSubnet parameters
   DevAppserverSubnetAZPara:
-    Description: Please select an AZ for the DevAppserver subnet
+    Description: Please select an AZ for the Appserversubnet
     Type: AWS::EC2::AvailabilityZone::Name
-    Default: us-east-1a
+    Default: ca-central-1a
 
-  DevAppserverSubnetCidrBlockPara:
-    Description: Please provide the Cidr block for your DevAppserver subnet
+  DevAppserverSubnetCidrPara:
+    Description: please provide your Cidr block
     Type: String
     Default: 10.0.2.0/24
 
-  # Database subnet parameters
+  # DevDBserverSubnet Parameters
   DevDBserverSubnetAZPara:
-    Description: Please select an AZ for the DevDBserver subnet
+    Description: Please select an AZ for the DBserversubnet
     Type: AWS::EC2::AvailabilityZone::Name
-    Default: us-east-1a
+    Default: ca-central-1a
 
-  DevDBserverSubnetCidrBlockPara:
-    Description: Please provide the Cidr block for your DevDBserver subnet
+  DevDBserverSubnetCidrPara:
+    Description: please provide your Cidr block
     Type: String
     Default: 10.0.3.0/24
 
@@ -52,62 +52,73 @@ Mappings: {}
 Conditions: {}
 
 Resources: 
-  #devolopment vpc
+  #Development vpc
   DevVPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: !Ref DevVPCCidrBlockPara
-      EnableDnsSupport: !Ref DevVPCEnableDnsSupportPara
+      CidrBlock: !Ref DevVPCCirdblockPara
+      EnableDnsSupport: !Ref DevVPCEnableDnsSupportpara
       Tags:
         - Key: Name
           Value: DevVPC
 
-  # webserver subnet
+  #Webserver Subnet
   DevWebserverSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Ref DevWebserverSubnetAZPara
       VpcId: !Ref DevVPC
-      CidrBlock: !Ref DevWebserverSubnetCidrBlockPara
+      CidrBlock: !Ref DevWebserverSubnetCidrPara
+
       Tags:
         - Key: Name
-          Value: DevWebserverSubnet  
+          Value: DevWebserverSubnet
 
-  # appserver subnet
+  # Appserver subnet
   DevAppserverSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Ref DevAppserverSubnetAZPara
-      VpcId: !Ref DevVPC 
-      CidrBlock: !Ref DevAppserverSubnetCidrBlockPara
+      VpcId: !Ref DevVPC
+      CidrBlock: !Ref DevAppserverSubnetCidrPara
       Tags:
         - Key: Name
-          Value: DevAppserverSubnet 
+          Value: DevAppserverSubnet
 
-  # databaseserver subnet
+  # DBserver Subnet
   DevDBserverSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Ref DevDBserverSubnetAZPara
       VpcId: !Ref DevVPC
-      CidrBlock: !Ref DevDBserverSubnetCidrBlockPara
+      CidrBlock: !Ref DevDBserverSubnetCidrPara
       Tags:
         - Key: Name
-          Value: DevDBserverSubnet             
+          Value: DevDBserverSubnet
 
-
-
+    #to integradte DB add more one subnet(one from each AZ) and also add a subnet group then create a DB
+     #instance and  call the subnets at that level
 Outputs: 
   DevVPCIdExportOutput:
-    Description: Exporting Dev VPC id
+    Description: Exporting DevVPCId
     Value: !Ref DevVPC
     Export: 
       Name: DevVPCId
 
-  DevWebserverSubnetIdExportOutput:
-    Description: Exporting Dev Webserver subnet id
+  DevWebserverSubnetIdExportOutput:   #outputname
+    Description: Exporting DevWebserverId
     Value: !Ref DevWebserverSubnet
     Export: 
-      Name: DevWebserverSubnetid #pass this on ec2-instance
+      Name: DevWebserverSubnetId  #export name
 
-  
+  DevAppserverSubnetIdExportOutput:   #outputname
+    Description: Exporting DevAppserverId
+    Value: !Ref DevAppserverSubnet
+    Export: 
+      Name: DevAppserverSubnetId  #export name
+
+  DevDBserverSubnetIdExportOutput:   #outputname
+    Description: Exporting DevDBserverId
+    Value: !Ref DevDBserverSubnet
+    Export: 
+      Name: DevDBserverSubnetId  #export name

@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "App EC2 instance automation for our development enviroment"
+Metadata: {}
+
+Parameters: 
+  devAppserverkeynamePara:
+    Description: Please select your keypair
+    Type: AWS::EC2::KeyPair::KeyName
+
+Mappings: 
+  DevAppserverGoldenAMIMap:                       # map name or logical name
+    ca-central-1:                                      # parameter name
+      goldernAMI: ami-0a2e7efb4257c0907                # mapkey
+
+    us-east-2:                                   # parameter name toplevel key or key name
+      goldernAMI: ami-05fb0b8c1424f266b                 # mapkey or second level key
+
+    us-wast-1:                                     # parameter name
+      goldernAMI: ami-0ce2cb35386fc22e9                # mapkey
+
+    us-wast-2:                                      # parameter name or toplevel key or keyname
+      goldernAMI: ami-008fe2fc65df48dac                # mapkey or second level key
+
+
+
+Conditions: {} 
+
+Resources:
+ DevAppserver:
+  Type: AWS::EC2::Instance
+  Properties:
+    KeyName: !Ref devAppserverkeynamePara
+    ImageId: !FindInMap [ DevAppserverGoldenAMIMap, !Ref 'AWS::Region', goldernAMI ] 
+    InstanceType: t2.micro
+    Monitoring: true
+    SecurityGroupIds :
+      - !ImportValue DevAppserverSGId
+    SubnetId : !ImportValue DevAppserverSubnetId
+    UserData: !Base64  |
+    Tags:
+      - Key: Name
+        Value: DevAppserver
+
+
+

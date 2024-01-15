@@ -1,14 +1,14 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: "EC2 instance automation for our development enviroment"
+Description: "Database EC2 instance automation for our development enviroment"
 Metadata: {}
 
 Parameters: 
-  devWebserverkeynamePara:
+  devDBserverkeynamePara:
     Description: Please select your keypair
     Type: AWS::EC2::KeyPair::KeyName
 
 Mappings: 
-  DevWebserverGoldenAMIMap:                       # map name or logical name
+  DevDBserverGoldenAMIMap:                       # map name or logical name
     ca-central-1:                                      # parameter name
       goldernAMI: ami-0a2e7efb4257c0907                # mapkey
 
@@ -26,33 +26,20 @@ Mappings:
 Conditions: {} 
 
 Resources:
- DevWebserver:
+ DevDBserver:
   Type: AWS::EC2::Instance
   Properties:
-    KeyName: !Ref devWebserverkeynamePara
-    ImageId: !FindInMap [ DevWebserverGoldenAMIMap, !Ref 'AWS::Region', goldernAMI ] 
+    KeyName: !Ref devDBserverkeynamePara
+    ImageId: !FindInMap [ DevDBserverGoldenAMIMap, !Ref 'AWS::Region', goldernAMI ] 
     InstanceType: t2.micro
     Monitoring: true
     SecurityGroupIds :
-      - !ImportValue DevWebserverSGId  # imported values from network
-    SubnetId : !ImportValue DevWebserverSubnetId  # imported from network
+      - !ImportValue DevDBserverSGId
+    SubnetId : !ImportValue DevDBserverSubnetId
     UserData: !Base64 |
-      #!/bin/bash 
-      sudo su
-      apt update -y
-      apt -y install apache2
-      systemctl start apache2
-      systemctl enable apache2
-      apt install wget -y
-      wget https://github.com/awanmbandi/google-cloud-projects/raw/jjtech-flix-app/jjtech-streaming-application-v1.zip  
-      apt install unzip -y
-      unzip jjtech-streaming-application-v1.zip
-      rm -f /var/www/html/index.html
-      cp -rf jjtech-streaming-application-v1/* /var/www/html/
-      
     Tags:
       - Key: Name
-        Value: DevWebserver
+        Value: DevDBserver
 
 
 
